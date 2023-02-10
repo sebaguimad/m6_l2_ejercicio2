@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>app cliente</title>
+</head>
+<body>
+    <form action="http://localhost:3000/conductoressinauto" method="GET">
+        <label for="edad">Edad conductor sin vehiculo</label>
+        <input type="number" name="edad" min="0" value="35">
+        <button type="submit">Consultar</button>
+    </form>
+    <form action="http://localhost:3000/auto" method="GET">
+        <label for="patente">Patente del vehículo</label>
+        <input type="text" name="patente">
+        <button type="submit">Consultar</button>
+    </form>
+</body>
+</html>
