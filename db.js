@@ -1,4 +1,5 @@
 const { Client } = require('pg')
+
  
 const client = new Client({
   host: 'localhost',
@@ -85,23 +86,28 @@ const traerSolitos = () => {
 // Retorna el automóvil con la patente <string> y los datos de su conductor (si es que tiene)
 const traerVehiculoporPatente = (patente) => {
     return new Promise((resolve, reject) => {
-        client.query(`SELECT automoviles.marca AS marcas_auto, patente, nombre_conductor FROM automoviles
-                        LEFT JOIN conductores ON conductores.nombre = automoviles.nombre_conductor
-                        WHERE patente = ${patente}`, (err, result) => {
-            if(err){
-                return reject(err)
-            }
-            resolve(result.rows)
-        })
-    })
-}
+      client.query(
+        `SELECT marca, patente, nombre_conductor FROM automoviles
+        LEFT JOIN conductores ON conductores.nombre = automoviles.nombre_conductor
+        WHERE patente = $1`,
+        [patente],
+        (err, result) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(result.rows);
+        }
+      );
+    });
+  };
+  
 
 // Retorna la lista de automóviles con patente empezada en la letra <letra> y los datos de su conductor (si es que tiene)
 const traerVehiculoporPatenteyLetrainicial = (letra) => {
     return new Promise((resolve, reject) => {
-        client.query(`SELECT automoviles.marca AS marcas_auto, patente, nombre_conductor FROM automoviles
+        client.query(`SELECT marca, patente, nombre_conductor FROM automoviles
                         LEFT JOIN conductores ON conductores.nombre = automoviles.nombre_conductor
-                        WHERE automoviles.patente = ${letra}%`, (err, result) => {
+                        WHERE patente ILIKE $1`, [`${letra}%`], (err, result) => {
             if(err){
                 return reject(err)
             }

@@ -14,7 +14,12 @@
     </form>
     <form action="http://localhost:3000/auto" method="GET">
         <label for="patente">Patente del vehículo</label>
-        <input type="text" name="patente">
+        <input style="text-transform: uppercase;" type="text" name="patente">
+        <button type="submit">Consultar</button>
+    </form>
+    <form action="http://localhost:3000/sauto" method="GET">
+        <label for="letra">Letra con que empieza la patente</label>
+        <input style="text-transform: uppercase;" type="text" name="letra">
         <button type="submit">Consultar</button>
     </form>
 </body>

@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 // destructuring se llaman los {}
-const { traerConductores, traerVehiculos, traerConductoresSinVehiculoporEdad, traerSolitos, traerVehiculoporPatente } = require('./db.js')
+const { traerConductores, traerVehiculos, traerConductoresSinVehiculoporEdad, traerSolitos, traerVehiculoporPatente, traerVehiculoporPatenteyLetrainicial } = require('./db.js')
 
 app.get('/', function (req, res) {
   res.send('Ejercicio 2')
@@ -84,17 +84,19 @@ app.get('/solitos', async function(req, res) {
 // Con ruta get /auto retorna la lista de automóviles con patente empezada en la letra <letra> y los datos de su conductor (si es que tiene)
 app.get('/auto', async function(req, res) {
     let patente = req.query.patente || '';
+    patente = patente.toUpperCase()
+    console.log(patente)
     traerVehiculoporPatente(patente).then(listado => {
-
-        if(listado.length == ''){
+        console.log(listado)
+        if(listado.length == 0){
             console.log(patente)
-            return res.send(`<h1>No se encontraron usuarios con la patente: ${patente}</h1>`)
+            return res.send(`<h1>No se encontraron usuarios con la patente: ${conductor.patente.toUpperCase()}</h1>`)
         }
 
         let acumulador = "<ol>"
         listado.forEach(conductor => {
             console.log(conductor)
-            acumulador+= `<li>Nombre: ${conductor.nombre_conductor} - Patente: ${conductor.patente} - Marca: ${conductor.marcas_auto}</li>`
+            acumulador+= `<li>Nombre: ${conductor.nombre_conductor} - Patente: ${conductor.patente} - Marca: ${conductor.marca}</li>`
         });
 
         acumulador+="</ol>"
@@ -106,6 +108,38 @@ app.get('/auto', async function(req, res) {
         res.status(500).send("Error interno del servidor.");
     })
   })
+
+// Con ruta get /sauto Retorna la lista de automóviles con patente empezada en la letra <letra> y los datos de su conductor (si es que tiene)
+// si uso la misma ruta /auto (que la solicitud anterior) no reconoce conductor como referencia definida, por eso, le asigné la ruta sauto.
+app.get('/sauto', async function(req, res) {
+    let letra = req.query.letra || '';
+    letra = letra.toUpperCase();
+    console.log(letra);
+
+    try {
+        let listado = await traerVehiculoporPatenteyLetrainicial(letra);
+        console.log(listado);
+
+        if(listado.length == 0){
+            return res.send(`<h1>No se encontraron vehículos con la letra inicial: ${letra.toUpperCase()}</h1>`);
+        }
+
+        let acumulador = "<ol>";
+        listado.forEach(vehiculo => {
+            console.log(vehiculo);
+            acumulador += `<li>Nombre: ${vehiculo.nombre_conductor} - Patente: ${vehiculo.patente} - Marca: ${vehiculo.marca}</li>`;
+        });
+        acumulador += "</ol>";
+        console.log(acumulador);
+        res.send(acumulador);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Error interno del servidor.");
+    }
+});
+
+
 
  
 app.listen(3000, ()=>console.log('Servidor escuchando en http://localhost:3000'))
